@@ -1,0 +1,21 @@
+{
+  "name": "primero",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "node app.js",
+    "electron": "electron .",
+    "electron-dev": "electron . --dev",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "description": "",
+  "devDependencies": {
+    "electron": "^37.1.0"
+  }  
+}
