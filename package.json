@@ -12,10 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.16.2"
   },
   "description": "",
   "devDependencies": {
+    "@types/pg": "^8.15.4",
     "electron": "^37.1.0"
-  }  
+  }
 }
