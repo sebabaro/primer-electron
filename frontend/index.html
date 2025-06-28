@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi App - Frontend Separado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .list-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s ease;
+        }
+
+        .list-item:hover {
+            background: #f5f5f5;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .item-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .error {
+            background: #ff5252;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: none;
+            background: #f5f5f5;
+        }
+
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Mi Aplicación Full Stack</h1>
+            <div class="badge">💻 Frontend Separado</div>
+            <div class="badge">🔗 Backend API REST</div>
+            <div class="badge">🗃️ PostgreSQL</div>
+        </div>
+
+        <!-- Dashboard de estadísticas -->
+        <div class="dashboard">
+            <div class="card">
+                <h3>📊 Estadísticas</h3>
+                <div class="stats" id="stats">
+                    <div class="stat">
+                        <div class="stat-number" id="totalUsuarios">-</div>
+                        <div class="stat-label">Usuarios</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="totalProductos">-</div>
+                        <div class="stat-label">Productos</div>
+                    </div>
+                </div>
+                <button onclick="cargarEstadisticas()">🔄 Actualizar</button>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Estado de la API</h3>
+                <div id="apiStatus">
+                    <div class="loading">Verificando conexión...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestañas -->
+        <div class="tabs">
+            <button class="tab active" onclick="mostrarTab('usuarios')">👥 Usuarios</button>
+            <button class="tab" onclick="mostrarTab('productos')">🛍️ Productos</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Tab Usuarios -->
+            <div id="tab-usuarios" class="tab-panel">
+                <div class="form-section">
+                    <h3>➕ Agregar Usuario</h3>
+                    <div id="usuarioMessage"></div>
+                    <form id="formUsuario">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombreUsuario">Nombre:</label>
+                                <input type="text" id="nombreUsuario" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailUsuario">Email:</label>
+                                <input type="email" id="emailUsuario" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edadUsuario">Edad:</label>
+                                <input type="number" id="edadUsuario" min="1" max="120" required>
+                            </div>
+                        </div>
+                        <button type="submit">Agregar Usuario</button>
+                    </form>
+                </div>
+
+                <div class="list-container">
+                    <h3>📋 Lista de Usuarios</h3>
+                    <div id="listaUsuarios">
+                        <div class="loading">Cargando usuarios...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Productos -->
+            <div id="tab-productos" class="tab-panel" style="display: none;">
+                <div class="form-section">
+                    <h3>➕ Agregar Producto</h3>
+                    <div id="productoMessage"></div>
+                    <form id="formProducto">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombreProducto">Nombre:</label>
+                                <input type="text" id="nombreProducto" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="precioProducto">Precio:</label>
+                                <input type="number" id="precioProducto" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="descripcionProducto">Descripción:</label>
+                            <textarea id="descripcionProducto" rows="3"></textarea>
+                        </div>
+                        <button type="submit">Agregar Producto</button>
+                    </form>
+                </div>
+
+                <div class="list-container">
+                    <h3>📋 Lista de Productos</h3>
+                    <div id="listaProductos">
+                        <div class="loading">Cargando productos...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la API
+        const API_BASE = 'http://localhost:3001/api';
+
+        // Función para hacer requests a la API
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error en la API');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error en API:', error);
+                throw error;
+            }
+        }
+
+        // Función para mostrar mensajes
+        function mostrarMensaje(elementId, mensaje, tipo = 'success') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${tipo}">${mensaje}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 3000);
+        }
+
+        // Función para cambiar tabs
+        function mostrarTab(tabName) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            
+            // Remover clase active de todos los tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar tab seleccionado
+            document.getElementById(`tab-${tabName}`).style.display = 'block';
+            event.target.classList.add('active');
+            
+            // Cargar datos del tab
+            if (tabName === 'usuarios') {
+                cargarUsuarios();
+            } else if (tabName === 'productos') {
+                cargarProductos();
+            }
+        }
+
+        // Cargar estadísticas
+        async function cargarEstadisticas() {
+            try {
+                const data = await apiRequest('/dashboard');
+                document.getElementById('totalUsuarios').textContent = data.data.totalUsuarios;
+                document.getElementById('totalProductos').textContent = data.data.totalProductos;
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+            }
+        }
+
+        // Verificar estado de la API
+        async function verificarAPI() {
+            try {
+                const data = await apiRequest('/');
+                document.getElementById('apiStatus').innerHTML = `
+                    <div style="color: #4CAF50;">✅ API conectada</div>
+                    <small>${data.name} v${data.version}</small>
+                `;
+            } catch (error) {
+                document.getElementById('apiStatus').innerHTML = `
+                    <div style="color: #f44336;">❌ API desconectada</div>
+                    <small>Verifica que el servidor esté corriendo</small>
+                `;
+            }
+        }
+
+        // Cargar usuarios
+        async function cargarUsuarios() {
+            try {
+                const data = await apiRequest('/usuarios');
+                const lista = document.getElementById('listaUsuarios');
+                
+                if (data.data.length === 0) {
+                    lista.innerHTML = '<div class="loading">No hay usuarios registrados</div>';
+                } else {
+                    lista.innerHTML = data.data.map(usuario => `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>${usuario.nombre}</h4>
+                                <div class="item-details">
+                                    📧 ${usuario.email} • 
+                                    🎂 ${usuario.edad} años • 
+                                    📅 ${new Date(usuario.fecha_registro).toLocaleDateString()}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                document.getElementById('listaUsuarios').innerHTML = 
+                    `<div class="error">Error cargando usuarios: ${error.message}</div>`;
+            }
+        }
+
+        // Cargar productos
+        async function cargarProductos() {
+            try {
+                const data = await apiRequest('/productos');
+                const lista = document.getElementById('listaProductos');
+                
+                if (data.data.length === 0) {
+                    lista.innerHTML = '<div class="loading">No hay productos registrados</div>';
+                } else {
+                    lista.innerHTML = data.data.map(producto => `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>${producto.nombre}</h4>
+                                <div class="item-details">
+                                    💰 $${parseFloat(producto.precio).toLocaleString()} • 
+                                    📝 ${producto.descripcion || 'Sin descripción'} • 
+                                    📅 ${new Date(producto.fecha_creacion).toLocaleDateString()}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                document.getElementById('listaProductos').innerHTML = 
+                    `<div class="error">Error cargando productos: ${error.message}</div>`;
+            }
+        }
+
+        // Form de usuarios
+        document.getElementById('formUsuario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombreUsuario').value;
+            const email = document.getElementById('emailUsuario').value;
+            const edad = document.getElementById('edadUsuario').value;
+            
+            try {
+                await apiRequest('/usuarios', {
+                    method: 'POST',
+                    body: JSON.stringify({ nombre, email, edad })
+                });
+                
+                mostrarMensaje('usuarioMessage', '✅ Usuario agregado exitosamente');
+                document.getElementById('formUsuario').reset();
+                cargarUsuarios();
+                cargarEstadisticas();
+            } catch (error) {
+                mostrarMensaje('usuarioMessage', `❌ Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Form de productos
+        document.getElementById('formProducto').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombreProducto').value;
+            const precio = document.getElementById('precioProducto').value;
+            const descripcion = document.getElementById('descripcionProducto').value;
+            
+            try {
+                await apiRequest('/productos', {
+                    method: 'POST',
+                    body: JSON.stringify({ nombre, precio, descripcion })
+                });
+                
+                mostrarMensaje('productoMessage', '✅ Producto agregado exitosamente');
+                document.getElementById('formProducto').reset();
+                cargarProductos();
+                cargarEstadisticas();
+            } catch (error) {
+                mostrarMensaje('productoMessage', `❌ Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Inicializar la aplicación
+        window.addEventListener('load', () => {
+            verificarAPI();
+            cargarEstadisticas();
+            cargarUsuarios();
+        });
+    </script>
+</body>
+</html>
